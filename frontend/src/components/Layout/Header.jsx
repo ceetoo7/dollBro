@@ -1,13 +1,25 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import { useAuth } from "../../context/auth";
+import toast from "react-hot-toast";
 
 const Header = () => {
+  const [auth, setAuth] = useAuth();
+  const handleLogOut = () => {
+    setAuth({
+      ...auth,
+      user: null,
+      token: "",
+    });
+    localStorage.removeItem("auth");
+    toast.success("LogOut Successfully!");
+  };
   return (
-    <header className="bg-white text-gray-600 shadow-lg h-12 ">
+    <header className=" bg-whitetext-gray-600 shadow-lg h-12 ">
       <nav className=" flex items-center justify-between  w-full h-full">
-        <div className="flex items-center px-5 ">
+        <div className="flex items-center mx-5 ">
           <button
-            className=" gap-2 lg:hidden text-gray-800 focus:outline-none "
+            className=" gap-2 md:hidden text-gray-800 focus:outline-none "
             aria-label="Toggle navigation"
           >
             <svg
@@ -25,11 +37,11 @@ const Header = () => {
               ></path>
             </svg>
           </button>
-          <NavLink to="/" className="text-2xl font-bold ml-5">
+          <NavLink to="/" className="text-2xl font-bold ">
             Doll Bro
           </NavLink>
         </div>
-        <ul className="hidden lg:flex space-x-8 gap-6 ">
+        <ul className="hidden lg:flex space-x-5 ">
           <li>
             <NavLink
               to="/"
@@ -40,18 +52,18 @@ const Header = () => {
           </li>
           <li>
             <NavLink
-              to="/login"
+              to="/shop"
               className="hover:text-blue-500  transition duration-300"
             >
-              Login
+              Shop
             </NavLink>
           </li>
           <li>
             <NavLink
-              to="/register"
+              to="/hotDeals"
               className="hover:text-blue-500 transition duration-300"
             >
-              Register
+              Hot Deals
             </NavLink>
           </li>
           <li>
@@ -63,16 +75,46 @@ const Header = () => {
             </NavLink>
           </li>
         </ul>
-        <form className="flex items-center space-x-2 gap-1">
+
+        {!auth.user ? (
+          <>
+            <ul className="flex space-x-5 mr-5">
+              <li>
+                <NavLink
+                  to="/login"
+                  className="hover:text-blue-500 transition duration-300"
+                >
+                  Login
+                </NavLink>
+              </li>
+            </ul>
+          </>
+        ) : (
+          <>
+            <ul className="flex space-x-5 mr-5">
+              <li>
+                <NavLink
+                  onClick={handleLogOut}
+                  to="/login"
+                  className="hover:text-blue-500 transition duration-300"
+                >
+                  LogOut
+                </NavLink>
+              </li>
+            </ul>
+          </>
+        )}
+
+        <form className=" hidden md:flex items-center space-x-1">
           <input
             type="text"
-            className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-300 text-gray-800"
+            className=" border border-gray-300 rounded-lg px-2 py-2 focus:outline-none focus:ring focus:ring-blue-300 text-gray-800"
             placeholder="Search"
             aria-label="Search"
           />
           <button
             type="submit"
-            className="bg-blue-500 text-white w-15 rounded-md hover:bg-blue-600 focus:ring focus:ring-blue-300 transition duration-300"
+            className=" mr-5 bg-violet-200 text-grey-300 w-15 rounded-md hover:bg-violet-00 hover:text-white focus:ring focus:ring-blue-300 transition duration-300"
           >
             Search
           </button>
