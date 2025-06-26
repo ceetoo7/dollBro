@@ -12,6 +12,7 @@ const Register = () => {
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
+  const [answer, setAnswer] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -25,6 +26,7 @@ const Register = () => {
         address,
         phone,
         password,
+        answer,
       });
 
       if (res.data.success) {
@@ -120,16 +122,34 @@ const Register = () => {
               />
             </div>
 
+            <div className="mb-6">
+              <label className="block text-gray-700 mb-2" htmlFor="password">
+                Answer
+              </label>
+              <input
+                type="text"
+                id="answer"
+                value={answer}
+                onChange={(e) => setAnswer(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
+                placeholder="What is your faviorate sports?"
+                required
+              />
+            </div>
+
             <button
               type="submit"
-              className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition duration-300"
+              className="w-full bg-violet-900 text-white py-2 rounded hover:bg-blue-600 transition duration-300"
             >
               Register
             </button>
 
             <p className="mt-4 text-center text-gray-600">
               Already have an account?{" "}
-              <a href="/login" className="text-blue-500 hover:underline">
+              <a
+                href="/login"
+                className="text-violet-900 hover:underline hover:text-violet-700"
+              >
                 Login
               </a>
             </p>

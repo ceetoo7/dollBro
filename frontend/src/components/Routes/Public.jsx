@@ -3,10 +3,9 @@ import { useAuth } from "../../context/auth";
 
 export default function PublicRoute() {
   const [auth] = useAuth();
-
-  if (auth?.token) {
-    return <Navigate to="/dashboard" />;
-  }
-
-  return <Outlet />;
+  return auth?.token ? (
+    <Navigate to={`/dashboard/${auth.user?.role === 1 ? "admin" : "user"}`} />
+  ) : (
+    <Outlet />
+  );
 }

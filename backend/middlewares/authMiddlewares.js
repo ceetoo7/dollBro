@@ -1,10 +1,16 @@
 import JWT from "jsonwebtoken";
 import userModel from "../models/userModel.js";
 
-// Protected route middleware
+// Middleware to verify login
 export const requireSignIn = async (req, res, next) => {
     try {
-        const decode = JWT.verify(req.headers.authorization, process.env.JWT_SECRET);
+        const token = req.headers.authorization?.split(" ")[1];
+
+        if (!token) {
+            return res.status(401).send({ success: false, message: "No token" });
+        }
+
+        const decode = JWT.verify(token, process.env.JWT_SECRET);
         req.user = decode;
         next();
     } catch (error) {
@@ -16,18 +22,20 @@ export const requireSignIn = async (req, res, next) => {
     }
 };
 
-// Admin access middleware
+// Middleware to check admin role
 export const isAdmin = async (req, res, next) => {
     try {
         const user = await userModel.findById(req.user._id);
-        if (user.role !== 1) {
+
+        if (!user || user.role !== 1) {
             return res.status(401).send({
                 success: false,
                 message: "Unauthorized Access",
             });
-        } else {
-            next();
+
         }
+
+        next();
     } catch (error) {
         console.log(error);
         res.status(401).send({

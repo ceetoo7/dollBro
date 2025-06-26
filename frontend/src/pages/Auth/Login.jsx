@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Layout from "../../components/Layout/Layout";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router-dom";
 import { useAuth } from "../../context/auth";
 
 const API = import.meta.env.VITE_REACT_APP_API;
@@ -13,27 +13,27 @@ const Login = () => {
   const [auth, setAuth] = useAuth();
 
   const navigate = useNavigate();
-  const location = useLocation();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      //console.log("API URL:", API); // ✅ Debug check
-
       const res = await axios.post(`${API}/auth/login`, {
         email,
         password,
       });
 
       if (res.data.success) {
-        toast.success(res.data.message);
         setAuth({
           ...auth,
           user: res.data.user,
           token: res.data.token,
         });
         localStorage.setItem("auth", JSON.stringify(res.data));
-        navigate(location.state || "/dashboard");
+
+        toast.success("Login Successful");
+
+        // Redirect to home page after login, regardless of role
+        navigate("/");
       } else {
         toast.error(res.data.message);
       }
@@ -44,7 +44,7 @@ const Login = () => {
   };
 
   return (
-    <Layout title="Register" description="Create a new account">
+    <Layout title="Login" description="Sign in to your account">
       <div className="flex justify-center items-center h-screen bg-gray-100">
         <div className="bg-white p-8 rounded-lg shadow-md w-96">
           <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
@@ -81,16 +81,29 @@ const Login = () => {
 
             <button
               type="submit"
-              className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition duration-300"
+              className="w-full mb-3 bg-violet-900 text-white py-2 rounded hover:bg-violet-800 transition duration-300"
             >
               Login
             </button>
 
+            <button
+              type="button"
+              className="w-full text-violet-900 py-2 rounded hover:text-violet-700 hover:underline "
+              onClick={() => {
+                navigate("/forgot-password");
+              }}
+            >
+              Forgot Password
+            </button>
+
             <p className="mt-4 text-center text-gray-600">
               Don't have an account?{" "}
-              <a href="/register" className="text-blue-500 hover:underline">
+              <NavLink
+                to="/register"
+                className="text-violet-900 hover:underline hover:text-violet-700"
+              >
                 Register
-              </a>
+              </NavLink>
             </p>
           </form>
         </div>
