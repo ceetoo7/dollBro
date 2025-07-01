@@ -38,7 +38,7 @@ const Products = () => {
         <div className="w-full p-4">
           <h1 className="text-sm mb-4">All Products List</h1>
 
-          <div className="grid grid-cols-2  md:grid-cols-3 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2  md:grid-cols-3  gap-4">
             {Array.isArray(products) &&
               products.map((p) => (
                 <Link
@@ -51,12 +51,12 @@ const Products = () => {
                     src={`http://localhost:8080/api/v1/product/product-photo/${p._id}`}
                     alt={p.name}
                   />
-                  <div className="p-4">
-                    <h5 className="text-lg font-semibold text-gray-800">
+                  <div className="p-4 bg-gray-100">
+                    <h5 className="text-lg  font-semibold text-gray-800">
                       {p.name}
                     </h5>
-                    <p className="mt-2 text-gray-600 text-sm">
-                      {p.description}
+                    <p className="mt-2  text-gray-600 text-sm">
+                      {p.description.substring(0, 30)}...
                     </p>
                   </div>
                 </Link>

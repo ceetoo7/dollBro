@@ -5,7 +5,7 @@ import {
   deleteCategoryController,
   categoryContoller,
   singleCategoryController,
-} from "../controllers/CategoryController.js";
+} from "../controllers/categoryController.js";
 
 import {
   requireSignIn,

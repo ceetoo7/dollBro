@@ -4,6 +4,7 @@ import fs from "fs";
 import mongoose from "mongoose";
 
 
+
 export const createProductController = async (req, res) => {
     try {
         const { name, description, price, category, color, quantity, shipping } = req.fields;
@@ -96,6 +97,52 @@ export const getSingleProductController = async (req, res) => {
         });
     }
 };
+
+
+//filter product by category
+// backend/controllers/productController.js
+export const filterProductByCategory = async (req, res) => {
+    try {
+        const { categories = [], price = [] } = req.body;
+
+        // Build query object
+        let query = {};
+
+        if (categories.length > 0) {
+            query.category = { $in: categories };
+        }
+
+        if (price.length > 0) {
+            // price is an array of arrays like [[0,500], [501,1000]]
+            // We'll use $or to combine ranges
+            const priceQueries = price.map(([min, max]) => ({
+                price: { $gte: min, $lte: max },
+            }));
+            query.$or = priceQueries;
+        }
+
+        const products = await productModel.find(query).select("-photo").populate("category");
+
+        res.status(200).send({
+            success: true,
+            products,
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            message: "Error filtering products by category and price",
+            error: error.message,
+        });
+    }
+};
+
+
+
+
+
+
+
 
 
 //get photo
@@ -222,3 +269,97 @@ export const updateProductController = async (req, res) => {
         });
     }
 }
+
+
+//product count
+export const productCountController = async (req, res) => {
+    try {
+        const total = await productModel.countDocuments({});
+        res.status(200).send({
+            success: true,
+            total,
+        });
+    } catch (error) {
+        res.status(500).send({
+            success: false,
+            message: "Error in product count",
+            error,
+        });
+    }
+};
+
+
+//product list base on page
+export const productListController = async (req, res) => {
+    try {
+        const perPage = 8;
+        const page = parseInt(req.params.page) || 1;
+
+        const products = await productModel
+            .find({})
+            .skip((page - 1) * perPage)
+            .limit(perPage)
+            .sort({ createdAt: -1 });
+
+        console.log(`Page: ${page}, Products returned: ${products.length}`);
+
+        return res.status(200).json({
+            success: true,
+            product: products,
+        });
+    } catch (error) {
+        console.error("Error fetching product list:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Failed to fetch products",
+            error,
+        });
+    }
+};
+
+
+//search product
+export const searchProductController = async (req, res) => {
+    try {
+        const { keyword } = req.params;
+        const results = await productModel.find({
+            $or: [
+                { name: { $regex: keyword, $options: "i" } },
+                { description: { $regex: keyword, $options: "i" } }
+            ]
+        }).select("-photo");
+        res.json(results);
+    } catch (error) {
+        console.log(error);
+        res.status(400).send({
+            success: false,
+            message: "Error in Search Product API",
+            error,
+        });
+    }
+}
+
+// Related products controller: get up to 3 products in the same category but excluding current product
+export const relatedProductController = async (req, res) => {
+    try {
+        const { pid, cid } = req.params;
+        console.log('Fetching related products for:', pid, cid);
+
+        const products = await productModel.find({
+            category: cid,
+            _id: { $ne: pid }
+        }).select("-photo").limit(3).populate("category");
+
+        return res.status(200).json({
+            success: true,
+            products,
+        });
+    } catch (error) {
+        console.error('Error in relatedProductController:', error);
+        return res.status(500).json({
+            success: false,
+            message: "Error while getting related products",
+            error: error.message || error,
+        });
+    }
+};

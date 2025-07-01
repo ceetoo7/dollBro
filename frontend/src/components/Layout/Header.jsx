@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../../context/auth";
 import toast from "react-hot-toast";
+import SearchInput from "../form/SearchInput";
 
 const Header = () => {
   const [auth, setAuth] = useAuth();
@@ -88,7 +89,7 @@ const Header = () => {
         </ul>
 
         {/* Desktop Search */}
-        <form className="hidden md:flex items-center space-x-2 ml-4">
+        {/* <form className="hidden md:flex items-center space-x-2 ml-4">
           <input
             type="text"
             className="border border-gray-300 rounded px-3 py-1 focus:outline-none focus:ring focus:ring-blue-300 text-gray-800"
@@ -100,7 +101,9 @@ const Header = () => {
           >
             Search
           </button>
-        </form>
+        </form> */}
+
+        <SearchInput />
 
         {/* Auth Buttons */}
         {!auth.user ? (

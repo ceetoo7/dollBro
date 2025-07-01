@@ -8,7 +8,7 @@ const AdminDashboard = () => {
   const [auth] = useAuth();
 
   return (
-    <>
+    <Layout>
       {/* Sidebar + Main Content Container */}
       <div className="flex flex-col md:flex-row min-h-screen">
         {/* Sidebar */}
@@ -21,7 +21,7 @@ const AdminDashboard = () => {
           <h3>Admin Contact: {auth?.user?.phone}</h3>
         </div>
       </div>
-    </>
+    </Layout>
   );
 };
 

@@ -15,7 +15,7 @@ const HomePage = () => {
       }
       author={"Chandan Chaudhary"}
     >
-      <pre>{JSON.stringify(auth, null, 4)}</pre>
+      {/* <pre>{JSON.stringify(auth, null, 4)}</pre> */}
       <section className="relative w-full h-[70vh]">
         {/* Image from web */}
         <img
